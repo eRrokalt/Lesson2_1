@@ -4,7 +4,8 @@
 import random
 
 
-random.seed(111)
+
+random.seed(4561)
 
 def sample_names_from_file(file_name: str, nums: int = 1) -> list[str]:
     """
@@ -33,66 +34,37 @@ def generate_scores_for_names(names: list[str]) -> list[dict]:
         list[dict]: 包含姓名和3個隨機分數的2維列表。
     """
     result_list = []
-
     for person_name in names:
         student_scores:dict = {"姓名":person_name}
-        total = 0
         for subject in ["國文", "英文", "數學"]:
             student_scores[subject] = random.randint(50, 100) 
-            total += student_scores[subject]
-        student_scores["平均成績"] = round(total / 3, 1)
         result_list.append(student_scores)
 
     return result_list
 
-def analyze_students(result_list:list[dict]):
-    """分析學生分數，計算全班平均成績、最高分和最低分。
 
+def print_student_scores(students: list[dict]):
+    '''列印學生姓名和分數，並計算平均分數。
     參數:
-        result_list (list[dict]): 學生分數列表。
+        students (list[dict]): 包含學生姓名和分數的列表。
+    
     回傳:
-        平均成績avg:float,最高分highest:dict,最低分lowest:dict。
-    """
-    
-    avg = sum([_['平均成績'] for _ in result_list]) / len(result_list)
-    highest = max(result_list, key=lambda x: x['平均成績'])
-    lowest = min(result_list, key=lambda x: x['平均成績'])    
-    return avg, highest, lowest
-
-
-def print_score_table(students:list[dict]):
-    """列印學生分數表。
-
-    參數:
-        students (list[dict]): 學生分數列表。
-    """
-    print('\n學生成績表:')
-    print(f"{'姓名':<8}{'國文':<6}{'英文':<6}{'數學':<6}{'平均成績':<6}")
-    for i in students:
-        print(f"{i['姓名']:<8}{i['國文']:<8}{i['英文']:<8}{i['數學']:<8}{i['平均成績']:<8}")
-
-def print_analysis(avg:float, highest:dict, lowest:dict):
-    """列印成績分析結果。
-    參數:
-        avg (float): 全班平均成績。
-        highest (dict): 最高分學生的資料。
-        lowest (dict): 最低分學生的資料。
-    """
-    
-    print('\n成績分析:')
-    print(f"- 全班平均成績: {avg:.1f} 分")
-    print(f"- 最高分學生: {highest['姓名']} ({highest['平均成績']:.1f} 分)")
-    print(f"- 最低分學生: {lowest['姓名']} ({lowest['平均成績']:.1f} 分)")
+        None
+    '''    
+    print("學生成績表:")
+    print("姓名\t國文\t英文\t數學\t平均")
+    for student in students:
+        name = student["姓名"]
+        scores:list[int] = [student[subject] for subject in ["國文", "英文", "數學"]]        
+        average = sum(scores) / len(scores)
+        print(f"{name}\t{scores[0]}\t{scores[1]}\t{scores[2]}\t{average:.2f}")
 
 
 def main():
-    print('=== 學生成績管理系統 ===')
+    print("=== 學生成績管理系統 ===\n\n")
     names: list[str] = sample_names_from_file("names.txt", nums=3)
     students: list[dict] = generate_scores_for_names(names)
-    avg, highest, lowest = analyze_students(students)
-    print_score_table(students)
-    print_analysis(avg, highest, lowest)
-
+    print_student_scores(students)
 
 if __name__ == "__main__":
     main()
